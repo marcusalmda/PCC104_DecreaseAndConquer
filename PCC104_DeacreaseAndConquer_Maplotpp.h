@@ -6,5 +6,6 @@
 #include <iostream>
 #include <matplot/matplot.h>
 #include <chrono>
+#include <set>
 
 // TODO: Reference additional headers your program requires here.
