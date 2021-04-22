@@ -3,7 +3,6 @@
 
 #include "PCC104_DeacreaseAndConquer_Maplotpp.h"
 
-
 std::vector<std::vector<int>> lexic_permute(int n) {
 
 	std::vector<std::vector<int>> permutations;
@@ -206,6 +205,98 @@ void time_experiment() {
 
 }
 
+int fake_coin_detector2(const std::vector<int>& coins, int begin, int end) {
+
+	int fake_coin = -1;
+
+	if ((end - begin) == 1) {
+		return begin;
+	}
+	else {
+		int pile_size = (end - begin) / 2;
+		int remainder = (end - begin) % 2;
+
+		// Divide the coins in two piles
+
+		int begin_p2 = begin + pile_size;
+		
+		if (remainder != 0) {
+			end = end - 1;
+		}
+
+		int weight_p1 = std::accumulate(coins.begin() + begin, coins.begin() + begin_p2, 0);
+		int weight_p2 = std::accumulate(coins.begin() + begin_p2, coins.begin() + end, 0);
+
+		 
+		
+
+		if (weight_p1 < weight_p2) {// If the weight the same 
+			fake_coin = fake_coin_detector2(coins, begin, begin_p2);// Discard both and continue with the third
+		}//else continue with the lighter of the two
+		else if (weight_p1 > weight_p2) {//else
+			fake_coin = fake_coin_detector2(coins, begin_p2, end);
+		}
+		else {
+			fake_coin = end;
+		}
+
+	}
+
+	return fake_coin;
+}
+
+int fake_coin_detector(const std::vector<int>& coins, int begin, int end) {
+
+	int fake_coin = -1;
+
+	if ((end - begin) == 1) {
+		return begin;
+	}
+	else if ((end-begin) == 2){
+		return (coins[begin] < coins[begin + 1]) ? begin : begin + 1;
+	}
+	else {
+		int pile_size = (end - begin) / 3;
+		int remainder = (end - begin) % 3;
+
+		// Divide the coins in three piles
+
+		// Weight the first two piles
+
+		int begin_p1;
+		int begin_p2;
+		int begin_p3;
+
+		if (remainder == 0) {
+			begin_p1 = begin;
+			begin_p2 = begin + pile_size;
+			begin_p3 = begin + 2 * pile_size;
+		}
+		else {
+			begin_p1 = begin;
+			begin_p2 = begin + pile_size + 1;
+			begin_p3 = begin + 2 * pile_size + 2;
+		}
+
+		int weight_p1 = std::accumulate(coins.begin() + begin_p1, coins.begin() + begin_p2, 0);
+		int weight_p2 = std::accumulate(coins.begin() + begin_p2, coins.begin() + begin_p3, 0);
+
+
+		if (weight_p1 == weight_p2) {// If the weight the same 
+			fake_coin = fake_coin_detector(coins, begin_p3, end);// Discard both and continue with the third
+		}//else continue with the lighter of the two
+		else if (weight_p1 < weight_p2) {//else
+			fake_coin = fake_coin_detector(coins, begin_p1, begin_p2);
+		}
+		else {//weight_p2 < weight_p1
+			fake_coin = fake_coin_detector(coins, begin_p2, begin_p3);
+		}
+
+	}
+
+	return fake_coin;
+}
+
 int main()
 {
 	//test_lexic_permute();
@@ -216,9 +307,21 @@ int main()
 
 	//print_subsets(power_set);
 
-	srand((unsigned int)time(0));
+	//srand((unsigned int)time(0));
 
-	time_experiment();
+	//time_experiment();
+
+	std::vector<int> coins(1000,3);
+	coins[17] = 1;
+	print_vector(coins);
+	
+
+	int fake1 = fake_coin_detector(coins, 0, coins.size());
+	std::cout << "Fake 1" << " " << fake1 << std::endl;
+
+	int fake2 = fake_coin_detector2(coins, 0, coins.size());
+	std::cout << "Fake 2" << " " << fake2 << std::endl;
+
 
 	return 0;
 }

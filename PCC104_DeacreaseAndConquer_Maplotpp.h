@@ -7,5 +7,6 @@
 #include <matplot/matplot.h>
 #include <chrono>
 #include <set>
-
+#include <numeric>
+#include <functional>
 // TODO: Reference additional headers your program requires here.
